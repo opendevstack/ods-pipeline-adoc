@@ -1,0 +1,21 @@
+# Hello World
+
+This is a sample adoc file.
+
+Actually, it is a Go template, with some placeholders like:
+
+* a
+* b
+* x
+
+Also with longer text:
+some random text here ...
+
+
+Even nested things work:
+
+Hello world!
+
+And other keys can be passed as well:
+
+bar

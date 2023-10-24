@@ -1,0 +1,20 @@
+# Hello World
+
+This is a sample adoc file.
+
+Actually, it is a Go template, with some placeholders like:
+
+* {{.artifacts.com_github_opendevstack_ods_pipeline_go_foo.result.foo}}
+* {{.artifacts.com_github_opendevstack_ods_pipeline_go_foo.result.bar}}
+* {{.artifacts.com_github_opendevstack_ods_pipeline_go_bar.result.foo}}
+
+Also with longer text:
+{{.artifacts.com_github_opendevstack_ods_pipeline_go_bar.info.value}}
+
+Even nested things work:
+
+Hello {{.artifacts.com_github_opendevstack_ods_pipeline_go_foo.other.hello.msg}}!
+
+And other keys can be passed as well:
+
+{{.data.root.metadata.foo}}

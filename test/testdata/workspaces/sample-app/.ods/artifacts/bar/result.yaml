@@ -1,0 +1,5 @@
+some:
+  sample:
+    value: hello
+other:
+  value: bye

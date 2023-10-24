@@ -1,0 +1,4 @@
+.vscode/
+.idea/
+/test/testdata/workspaces/workspace-*
+/cmd/render/render

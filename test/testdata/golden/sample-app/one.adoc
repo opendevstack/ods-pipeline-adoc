@@ -1,0 +1,7 @@
+# Hello World
+
+This is a sample adoc file.
+
+Output: 123
+
+Result: hello

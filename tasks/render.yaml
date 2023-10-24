@@ -1,0 +1,68 @@
+# File is generated; DO NOT EDIT.
+
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: ods-pipeline-adoc-render
+spec:
+  description: |
+    Render Asciidoctor templates to PDF.
+
+    See https://github.com/opendevstack/ods-pipeline-adoc/blob/vlatest/docs/tasks/render.adoc
+  params:
+    - name: working-dir
+      description: |
+        Working directory. The path must be relative to the root of the repository,
+        without leading `./` and trailing `/`.
+      type: string
+      default: "."
+    - name: template
+      description: >-
+        Glob pattern from where to source templates.
+      type: string
+    - name: output-dir
+      description: >-
+        Output directory where to place the rendered PDF files.
+      type: string
+    - name: data-sources
+      description: >-
+        Glob patterns from where to source data.
+        Multiple glob patterns are separated by semicolons.
+        Each glob pattern must specify a key, followed by a colon, followed by the pattern.
+        The key is used to disambiguate the parsed data in the Go templates.
+      type: string
+      default: "artifacts:.ods/artifacts/*/*.json;artifacts:.ods/artifacts/*/*.yaml"
+    - name: pdf-theme
+      description: >-
+        The name or file path of the Asciidoctor PDF theme to load.
+      type: string
+      default: ""
+  steps:
+    - name: render
+      # Image is built from build/images/Dockerfile.adoc-toolset.
+      image: 'ghcr.io/opendevstack/ods-pipeline-adoc/adoc-toolset:latest'
+      env:
+        - name: DEBUG
+          valueFrom:
+            configMapKeyRef:
+              key: debug
+              name: ods-pipeline
+      resources:
+        {}
+      script: |
+        render-template \
+          --template='$(params.template)' \
+          --output-dir=$(params.output-dir) \
+          --data-source='$(params.data-sources)'
+
+        asciidoctor_pdf_flags=''
+        if [ "$(params.pdf-theme)" != "" ]; then
+          asciidoctor_pdf_flags='-a pdf-theme=$(params.pdf-theme)'
+        fi
+
+        for f in $(params.output-dir)/*.out; do
+          /opt/app-root/src/bin/asciidoctor-pdf ${asciidoctor_pdf_flags} $f
+        done
+      workingDir: $(workspaces.source.path)
+  workspaces:
+    - name: source
