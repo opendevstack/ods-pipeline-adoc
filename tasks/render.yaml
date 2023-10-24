@@ -24,6 +24,7 @@ spec:
       description: >-
         Output directory where to place the rendered PDF files.
       type: string
+      default: ".ods/artifacts/org.opendevstack.pipeline.adoc.pdf"
     - name: data-sources
       description: >-
         Glob patterns from where to source data.
