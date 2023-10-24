@@ -8,7 +8,7 @@ Tekton task for use with [ODS Pipeline](https://github.com/opendevstack/ods-pipe
 
 ```yaml
 tasks:
-- name: build
+- name: render
   taskRef:
     resolver: git
     params:
@@ -19,7 +19,7 @@ tasks:
     - { name: source, workspace: shared-workspace }
 ```
 
-See the [documentation](https://github.com/opendevstack/ods-pipeline-adoc/blob/main/docs/render.adoc) for details and available parameters.
+See the [documentation](https://github.com/opendevstack/ods-pipeline-adoc/blob/main/docs/render.adoc) for detailed usage and available task parameters.
 
 ## About this repository
 
