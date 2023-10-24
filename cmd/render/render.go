@@ -19,6 +19,9 @@ type keyedFileDataMap map[string]fileDataMap
 var nonAlphanumericRegex = regexp.MustCompile(`[^a-zA-Z0-9]+`)
 
 func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) error {
+	if !strings.HasSuffix(baseDir, "/") {
+		baseDir = baseDir + "/"
+	}
 	if !filepath.IsAbs(outputDir) {
 		outputDir = filepath.Join(baseDir, outputDir)
 	}
@@ -37,6 +40,11 @@ func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) e
 		return err
 	}
 	for _, templateFile := range matches {
+		log.Printf(
+			"Rendering template %q into %q ...",
+			strings.TrimPrefix(templateFile, baseDir),
+			strings.TrimPrefix(outputDir, baseDir),
+		)
 		tmpl, err := template.ParseFiles(templateFile)
 		if err != nil {
 			return fmt.Errorf("parse template %q: %s", templateFile, err)
