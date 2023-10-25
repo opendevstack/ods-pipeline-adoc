@@ -52,9 +52,9 @@ spec:
           --output-dir=$(params.output-dir) \
           --data-source='$(params.data-sources)'
 
-        asciidoctor_pdf_flags=''
+        asciidoctor_pdf_flags='--failure-level ERROR'
         if [ "$(params.pdf-theme)" != "" ]; then
-          asciidoctor_pdf_flags='-a pdf-theme=$(params.pdf-theme)'
+          asciidoctor_pdf_flags+=' -a pdf-theme=$(params.pdf-theme)'
         fi
 
         for f in $(params.output-dir)/*.out; do
