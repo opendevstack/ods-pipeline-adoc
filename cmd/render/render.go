@@ -109,6 +109,14 @@ func collectDataFromMatchingFiles(baseDir, glob string, data map[string]interfac
 		}
 		defer f.Close()
 
+		fInfo, err := f.Stat()
+		if err != nil {
+			return err
+		}
+		if fInfo.IsDir() {
+			continue
+		}
+
 		dec := decoderFunc(f)
 		err = dec.Decode(&fileData)
 		if err != nil {
