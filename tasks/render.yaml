@@ -30,7 +30,7 @@ spec:
         Glob patterns from where to source data.
         Multiple glob patterns are separated by semicolons.
       type: string
-      default: ".ods/*;.ods/repos/*/.ods/*.ods/artifacts/*/*.json;.ods/artifacts/*/*.yaml"
+      default: ".ods/*;.ods/repos/*/.ods/*;.ods/artifacts/*/*.json;.ods/artifacts/*/*.yaml"
     - name: pdf-theme
       description: >-
         The name or file path of the Asciidoctor PDF theme to load.
