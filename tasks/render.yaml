@@ -29,10 +29,8 @@ spec:
       description: >-
         Glob patterns from where to source data.
         Multiple glob patterns are separated by semicolons.
-        Each glob pattern must specify a key, followed by a colon, followed by the pattern.
-        The key is used to disambiguate the parsed data in the Go templates.
       type: string
-      default: "artifacts:.ods/artifacts/*/*.json;artifacts:.ods/artifacts/*/*.yaml"
+      default: ".ods/*;.ods/repos/*/.ods/*.ods/artifacts/*/*.json;.ods/artifacts/*/*.yaml"
     - name: pdf-theme
       description: >-
         The name or file path of the Asciidoctor PDF theme to load.

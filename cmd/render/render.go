@@ -10,12 +10,6 @@ import (
 	"text/template"
 )
 
-// fileDataMap maps a "filename" to arbitary data.
-type fileDataMap map[string]map[string]interface{}
-
-// keyedFileDataMap maps a key to a fileDataMap
-type keyedFileDataMap map[string]fileDataMap
-
 var nonAlphanumericRegex = regexp.MustCompile(`[^a-zA-Z0-9]+`)
 
 func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) error {
@@ -58,7 +52,7 @@ func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) e
 	return nil
 }
 
-func renderTemplate(outputDir, templateFile string, tmpl *template.Template, data keyedFileDataMap) error {
+func renderTemplate(outputDir, templateFile string, tmpl *template.Template, data map[string]interface{}) error {
 	outFile := strings.TrimSuffix(templateFile, filepath.Ext(templateFile)) + ".out"
 	w, err := os.Create(filepath.Join(outputDir, outFile))
 	if err != nil {
@@ -68,72 +62,58 @@ func renderTemplate(outputDir, templateFile string, tmpl *template.Template, dat
 }
 
 func safeMapKey(str string) string {
-	return nonAlphanumericRegex.ReplaceAllString(str, "_")
+	return strings.Trim(nonAlphanumericRegex.ReplaceAllString(str, "_"), "_")
 }
 
-func extractDataFromSources(baseDir string, dataSourceGlobs []string) (keyedFileDataMap, error) {
-	data := make(keyedFileDataMap)
-	for _, keyedGlob := range dataSourceGlobs {
-		globKey, globPattern, found := strings.Cut(keyedGlob, ":")
-		if !found {
-			return nil, fmt.Errorf("no colon found in %q", keyedGlob)
-		}
-		log.Printf("Collecting data from files matching glob %q under key %q ...", globPattern, globKey)
-		if _, ok := data[globKey]; !ok {
-			data[globKey] = make(fileDataMap)
-		}
-		fdm, err := collectDataFromMatchingFiles(baseDir, globPattern)
+func extractDataFromSources(baseDir string, dataSourceGlobs []string) (map[string]interface{}, error) {
+	data := make(map[string]interface{})
+	for _, globPattern := range dataSourceGlobs {
+		log.Printf("Collecting data from files matching glob %q ...", globPattern)
+		err := collectDataFromMatchingFiles(baseDir, globPattern, data)
 		if err != nil {
 			return nil, err
-		}
-		for fileKey, fileData := range fdm {
-			if _, ok := data[globKey][fileKey]; !ok {
-				data[globKey][fileKey] = fileData
-			} else {
-				for k, v := range fileData {
-					data[globKey][fileKey][k] = v
-				}
-			}
 		}
 	}
 	return data, nil
 }
 
-func collectDataFromMatchingFiles(baseDir, glob string) (fileDataMap, error) {
-	result := make(fileDataMap)
+// buildMapPath builds map keys in m corresponding to p.
+// p is expected to be a filepath using slashes without an extension, e.g. "a/b/c/d".
+func buildMapPath(m map[string]interface{}, p string) map[string]interface{} {
+	elems := strings.SplitN(p, "/", 2)
+	dir := safeMapKey(elems[0])
+	if _, ok := m[dir]; !ok {
+		m[dir] = make(map[string]interface{})
+	}
+	leaf := m[dir].(map[string]interface{})
+	if len(elems) > 1 {
+		return buildMapPath(leaf, elems[1])
+	}
+	return leaf
+}
+
+func collectDataFromMatchingFiles(baseDir, glob string, data map[string]interface{}) error {
 	matches, err := filepath.Glob(filepath.Join(baseDir, glob))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	for _, m := range matches {
-		ext := filepath.Ext(m)
-		decoderFunc := selectNewDecoderFunc(ext)
-		matchForKey := strings.TrimPrefix(m, baseDir)
-		fileName := filepath.Base(matchForKey)
-		kind := filepath.Base(strings.TrimSuffix(matchForKey, fileName))
-		fKey := strings.TrimSuffix(fileName, ext)
+		p := filepath.ToSlash(strings.TrimPrefix(m, baseDir))
+		p = strings.TrimSuffix(p, filepath.Ext(p))
+		fileData := buildMapPath(data, p)
+		decoderFunc := selectNewDecoderFunc(filepath.Ext(m))
 
 		f, err := os.Open(m)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		defer f.Close()
 
 		dec := decoderFunc(f)
-		res := make(map[string]interface{})
-		err = dec.Decode(&res)
+		err = dec.Decode(&fileData)
 		if err != nil {
-			return nil, err
+			return err
 		}
-
-		mk := safeMapKey(kind)
-		if mk == "" || mk == "_" {
-			mk = "root"
-		}
-		if _, ok := result[mk]; !ok {
-			result[mk] = make(map[string]interface{})
-		}
-		result[mk][fKey] = res
 	}
-	return result, err
+	return err
 }
