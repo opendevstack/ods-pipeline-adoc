@@ -8,8 +8,10 @@ import (
 	"github.com/opendevstack/ods-pipeline-adoc/internal/testhelper"
 )
 
-func TestBuildPath(t *testing.T) {
+func TestBuildMapPath(t *testing.T) {
 	m := make(map[string]interface{})
+
+	// build map path for first file
 	p := "a/b/c/d.txt"
 	p = strings.TrimSuffix(p, filepath.Ext(p))
 	p = filepath.ToSlash(p)
@@ -28,6 +30,18 @@ func TestBuildPath(t *testing.T) {
 	c := b["c"].(map[string]interface{})
 	if _, ok := c["d"]; !ok {
 		t.Fatal("expect key d")
+	}
+
+	// build map path for second file which overlaps first path
+	p = "a/x.txt"
+	p = strings.TrimSuffix(p, filepath.Ext(p))
+	p = filepath.ToSlash(p)
+	buildMapPath(m, p)
+	if _, ok := a["x"]; !ok {
+		t.Fatal("expect key x")
+	}
+	if _, ok := a["b"]; !ok {
+		t.Fatal("expect key b")
 	}
 }
 
