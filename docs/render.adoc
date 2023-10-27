@@ -49,6 +49,11 @@ without leading `./` and trailing `/`.
 | 
 | The name or file path of the Asciidoctor PDF theme to load.
 
+
+| retain-rendered-adoc-files
+| false
+| Whether to retain the rendered adoc files that are created as an intermediary step before transforming them to a PDF.
+
 |===
 
 == Results

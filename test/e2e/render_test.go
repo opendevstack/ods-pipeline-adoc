@@ -16,8 +16,9 @@ func TestRenderAdocTask(t *testing.T) {
 		ttr.InNamespace(namespaceConfig.Name),
 		ttr.UsingTask("ods-pipeline-adoc-render"),
 		ttr.WithStringParams(map[string]string{
-			"template":   "templates/*.adoc.tmpl",
-			"output-dir": "rendered",
+			"template":                   "templates/*.adoc.tmpl",
+			"output-dir":                 "rendered",
+			"retain-rendered-adoc-files": "true",
 		}),
 		ott.WithGitSourceWorkspace(t, "../testdata/workspaces/sample-app", namespaceConfig.Name),
 		ttr.AfterRun(func(config *ttr.TaskRunConfig, run *tekton.TaskRun, logs bytes.Buffer) {

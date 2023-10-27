@@ -36,6 +36,12 @@ spec:
         The name or file path of the Asciidoctor PDF theme to load.
       type: string
       default: ""
+    - name: retain-rendered-adoc-files
+      description: >-
+        Whether to retain the rendered adoc files that are created as an
+        intermediary step before transforming them to a PDF.
+      type: string
+      default: "false"
   steps:
     - name: render
       # Image is built from build/images/Dockerfile.adoc-toolset.
@@ -62,6 +68,10 @@ spec:
         for f in $(params.output-dir)/*.out; do
           /opt/app-root/src/bin/asciidoctor-pdf ${asciidoctor_pdf_flags} $f
         done
+
+        if [ "$(params.retain-rendered-adoc-files)" = "false" ]; then
+          rm $(params.output-dir)/*.out
+        fi
       workingDir: $(workspaces.source.path)
   workspaces:
     - name: source
