@@ -39,11 +39,14 @@ func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) e
 			strings.TrimPrefix(templateFile, baseDir),
 			strings.TrimPrefix(outputDir, baseDir),
 		)
-		tmpl, err := template.ParseFiles(templateFile)
+		templateBase := filepath.Base(templateFile)
+		tmpl, err := template.
+			New(templateBase).
+			Funcs(templateFuncs).
+			ParseFiles(templateFile)
 		if err != nil {
 			return fmt.Errorf("parse template %q: %s", templateFile, err)
 		}
-		templateBase := filepath.Base(templateFile)
 		err = renderTemplate(outputDir, templateBase, tmpl, data)
 		if err != nil {
 			return fmt.Errorf("render template %q: %s", templateBase, err)
