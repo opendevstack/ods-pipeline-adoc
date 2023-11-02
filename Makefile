@@ -47,7 +47,7 @@ docs: tasks ## Render documentation for tasks.
 
 ##@ Testing
 
-test: test-e2e ## Run complete testsuite.
+test: test-cmd test-e2e ## Run complete testsuite.
 .PHONY: test
 
 test-cmd: ## Run testsuite of commands.
