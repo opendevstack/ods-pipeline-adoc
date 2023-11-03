@@ -14,11 +14,10 @@ The asciidoc template can access the value of the field `a` by referencing `{{.o
 
 Note that only JSON and YAML formats are recognized as such. If a matching file does not end in either `.json` or `.y(a)ml`, its entire content is made available under the key `value`. For example, the glob pattern `*.log` might match the file `pipeline-run.log`, which would expose the content of the file as `pipeline_run.value` to the template.
 
-The Go template has access to the following helper functions:
+The Go template can make use of template functions provided by link:http://masterminds.github.io/sprig/[sprig], as well as the following helper functions:
 
 * `fromMultiYAML`. Turns a string of multiple YAML documents (separated with `---`) into a slice of maps.
 * `toYAML`. Turns the given object into a YAML string.
-* `parseTime`. Parses a string using the specified layout into a `time.Time`. This function is just a wrapper around link:https://pkg.go.dev/time#Parse[time.Parse], see its documentation for details how to specify various layouts. Once parsed, the time can be formatted with `{{$t.Format "<layout>"}}` as per link:https://pkg.go.dev/time#Time.Format[time.Format].
 * `toSentence`. Turns a slice into a string enumerating its items. The words are connected with commas, except for the last two words, which are connected with "and".
 * `keys`. Returns a slice of all keys of given map.
 

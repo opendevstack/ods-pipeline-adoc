@@ -11,7 +11,6 @@ Actually, it is a Go template, with some placeholders like:
 Also with longer text:
 some random text here ...
 
-
 Even nested things work:
 
 Hello world!
@@ -19,3 +18,10 @@ Hello world!
 And other keys can be passed as well:
 
 bar
+
+Sprig template functions can be used:
+31/12/2017
+
+And custom helper functions can be used:
+bar: b
+foo: a

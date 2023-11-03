@@ -3,7 +3,6 @@ package main
 import (
 	"html/template"
 	"strings"
-	"time"
 
 	"sigs.k8s.io/yaml"
 )
@@ -11,7 +10,6 @@ import (
 var templateFuncs = template.FuncMap{
 	"fromMultiYAML": fromMultiYAML,
 	"toYAML":        toYAML,
-	"parseTime":     parseTime,
 	"toSentence":    toSentence,
 	"keys":          keys,
 }
@@ -36,11 +34,6 @@ func fromMultiYAML(marshalled string) ([]map[string]interface{}, error) {
 func toYAML(unmarshalled any) (string, error) {
 	b, err := yaml.Marshal(unmarshalled)
 	return string(b), err
-}
-
-// parseTime parses a string using the specified layout into a time.Time.
-func parseTime(layout, t string) (time.Time, error) {
-	return time.Parse(layout, t)
 }
 
 // toSentence turns a slice into a string enumerating its items.

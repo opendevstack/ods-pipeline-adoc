@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
+
+	"github.com/Masterminds/sprig/v3"
 )
 
 var nonAlphanumericRegex = regexp.MustCompile(`[^a-zA-Z0-9]+`)
@@ -43,6 +45,7 @@ func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) e
 		tmpl, err := template.
 			New(templateBase).
 			Funcs(templateFuncs).
+			Funcs(sprig.FuncMap()).
 			ParseFiles(templateFile)
 		if err != nil {
 			return fmt.Errorf("parse template %q: %s", templateFile, err)

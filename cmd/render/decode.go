@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"strings"
 
 	"sigs.k8s.io/yaml"
 )
@@ -40,7 +41,7 @@ func (d *plainDecoder) Decode(v any) error {
 	}
 	if x, ok := v.(*map[string]interface{}); ok {
 		z := *x
-		z["value"] = string(b)
+		z["value"] = strings.TrimSpace(string(b))
 	} else {
 		return errors.New("unexpected type")
 	}
