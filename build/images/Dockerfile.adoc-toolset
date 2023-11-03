@@ -6,7 +6,7 @@ COPY . .
 RUN cd cmd/render && CGO_ENABLED=0 go build
 
 FROM registry.access.redhat.com/ubi9/ruby-31
-
 RUN gem install asciidoctor-pdf && asciidoctor-pdf -v
-
 COPY --from=go-builder /usr/src/app/cmd/render/render /usr/local/bin/render-template
+VOLUME /workspace/source
+USER 1001
