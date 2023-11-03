@@ -49,6 +49,11 @@ func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) e
 		}
 		err = renderTemplate(outputDir, templateBase, tmpl, data)
 		if err != nil {
+			if strings.Contains(err.Error(), "map has no entry for key") {
+				res := []string{}
+				walkMap(data, &res, []string{}, assembleRef)
+				return fmt.Errorf("render template %q: %s.\nValid references are:\n%s", templateBase, err, strings.Join(res, "\n"))
+			}
 			return fmt.Errorf("render template %q: %s", templateBase, err)
 		}
 	}
@@ -127,4 +132,22 @@ func collectDataFromMatchingFiles(baseDir, glob string, data map[string]interfac
 		}
 	}
 	return err
+}
+
+type visitFunc func(path []string, key any, value any) string
+
+func assembleRef(path []string, key, value any) string {
+	return fmt.Sprintf(".%s.%s", strings.Join(path, "."), key)
+}
+
+func walkMap(data map[string]any, paths *[]string, path []string, visit visitFunc) {
+	for key, value := range data {
+		if child, isMap := value.(map[string]any); isMap {
+			path = append(path, key)
+			walkMap(child, paths, path, visit)
+			path = path[:len(path)-1]
+		} else {
+			*paths = append(*paths, visit(path, key, child))
+		}
+	}
 }

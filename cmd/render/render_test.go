@@ -79,12 +79,20 @@ func TestRender(t *testing.T) {
 func TestRenderFailsOnMissingKeys(t *testing.T) {
 	tempDir := testhelper.MkdirTempDir(t)
 	defer testhelper.RmTempDir(tempDir)
-	if err := render(
+	err := render(
 		"../../test/testdata/fixtures",
-		"sample.adoc.tmpl",
+		"error.adoc.tmpl",
 		tempDir,
-		[]string{},
-	); err == nil {
-		t.Fatal("Fixture template sample.adoc.tmpl requires data to be present")
+		[]string{
+			".ods/artifacts/*/*.json",
+			".ods/artifacts/*/*.yaml",
+			".ods/artifacts/*/*.txt",
+			"*.yaml",
+		},
+	)
+	if err == nil {
+		t.Error("Fixture template error.adoc.tmpl includes non-existent reference")
+	} else if !strings.Contains(err.Error(), ".ods.artifacts.org_opendevstack_pipeline_go_foo.result.foo") {
+		t.Errorf("Error must list valid references, got:\n%s", err)
 	}
 }
