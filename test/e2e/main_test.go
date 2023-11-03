@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	ott "github.com/opendevstack/ods-pipeline/pkg/odstasktest"
 	ttr "github.com/opendevstack/ods-pipeline/pkg/tektontaskrun"
@@ -31,7 +32,11 @@ func testMain(m *testing.M) int {
 	}
 	nc, cleanup, err := ttr.SetupTempNamespace(
 		cc,
-		ott.StartNexus(),
+		// Sleep until timing issue is solved
+		func(cc *ttr.ClusterConfig, nc *ttr.NamespaceConfig) error {
+			time.Sleep(time.Minute)
+			return nil
+		},
 		ott.InstallODSPipeline(nil),
 		ttr.InstallTaskFromPath(
 			filepath.Join(rootPath, "build/tasks/render.yaml"),
