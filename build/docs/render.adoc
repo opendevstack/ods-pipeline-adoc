@@ -16,5 +16,6 @@ The Go template has access to the following helper functions:
 * `toYAML`. Turns the given object into a YAML string.
 * `parseTime`. Parses a string using the specified layout into a `time.Time`. This function is just a wrapper around link:https://pkg.go.dev/time#Parse[time.Parse], see its documentation for details how to specify various layouts. Once parsed, the time can be formatted with `{{$t.Format "<layout>"}}` as per link:https://pkg.go.dev/time#Time.Format[time.Format].
 * `toSentence`. Turns a slice into a string enumerating its items. The words are connected with commas, except for the last two words, which are connected with "and".
+* `keys`. Returns a slice of all keys of given map.
 
 After the Go template has been rendered, link:https://github.com/asciidoctor/asciidoctor-pdf[asciidoctor-pdf] is used to turn each rendered asciidoc file into a PDF file. The resulting files are placed into the directory specified by `output-dir` (defaulting to `.ods/artifacts/org.opendevstack.pipeline.adoc.pdf` so that created PDFs are preserved as artifacts in Nexus). Theming is possible by specifying the `pdf-theme` parameter as explained in the link:https://docs.asciidoctor.org/pdf-converter/latest/theme/apply-theme/#theme-and-font-directories[Theme and font directories] documentation.

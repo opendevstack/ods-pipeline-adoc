@@ -13,6 +13,7 @@ var templateFuncs = template.FuncMap{
 	"toYAML":        toYAML,
 	"parseTime":     parseTime,
 	"toSentence":    toSentence,
+	"keys":          keys,
 }
 
 // fromMultiYAML turns a string of multiple YAML documents
@@ -54,4 +55,12 @@ func toSentence(items []string) string {
 	default:
 		return strings.Join(items[0:len(items)-1], ", ") + " and " + items[len(items)-1]
 	}
+}
+
+// keys returns a slice of all keys in map m.
+func keys(m map[string]any) (keys []string) {
+	for k, _ := range m {
+		keys = append(keys, k)
+	}
+	return
 }
