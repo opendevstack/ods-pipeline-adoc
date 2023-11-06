@@ -20,12 +20,14 @@ func main() {
 	outputDir := flag.String("output-dir", "", "Output directory where to place the rendered files")
 	var dataSourceFlags multiFlag
 	flag.Var(&dataSourceFlags, "data-source", "Glob pattern from where to source data (may be specified multiple times)")
+	var setFlags multiFlag
+	flag.Var(&setFlags, "set", "Set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	flag.Parse()
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := render(wd, *templateGlob, *outputDir, dataSourceFlags); err != nil {
+	if err := render(wd, *templateGlob, *outputDir, dataSourceFlags, setFlags); err != nil {
 		log.Fatal(err)
 	}
 }

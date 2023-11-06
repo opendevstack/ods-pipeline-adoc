@@ -67,6 +67,10 @@ func TestRender(t *testing.T) {
 			".ods/artifacts/*/*.txt",
 			"*.yaml",
 		},
+		[]string{
+			"keyfoo=valbar",
+			"keybar=valbaz",
+		},
 	); err != nil {
 		t.Fatal(err)
 	}
@@ -89,6 +93,7 @@ func TestRenderFailsOnMissingKeys(t *testing.T) {
 			".ods/artifacts/*/*.txt",
 			"*.yaml",
 		},
+		[]string{},
 	)
 	if err == nil {
 		t.Error("Fixture template error.adoc.tmpl includes non-existent reference")

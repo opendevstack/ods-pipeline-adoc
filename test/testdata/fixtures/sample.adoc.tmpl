@@ -23,4 +23,7 @@ Sprig template functions can be used:
 {{toDate "2006-01-02" "2017-12-31" | date "02/01/2006"}}
 
 And custom helper functions can be used:
-{{toYAML .ods.artifacts.org_opendevstack_pipeline_go_foo.result -}}
+{{toYAML .ods.artifacts.org_opendevstack_pipeline_go_foo.result}}
+
+It is also possible to use values set from the CLI:
+{{.keyfoo}} and {{.keybar}}
