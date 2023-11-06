@@ -26,9 +26,16 @@ spec:
     - name: data-sources
       description: >-
         Glob patterns from where to source data.
-        Multiple glob patterns are separated by semicolons.
+        Multiple glob patterns are separated by commas.
       type: string
-      default: ".ods/*;.ods/repos/*/.ods/*;.ods/artifacts/*/*.json;.ods/artifacts/*/*.yaml"
+      default: ".ods/*,.ods/repos/*/.ods/*,.ods/artifacts/*/*.json,.ods/artifacts/*/*.yaml"
+    - name: set
+      description: >-
+        Set template data values directly.
+        Multiple key=value pairs are separated by commas. Keys specified have
+        precedence over those discovered through `data-sources`.
+      type: string
+      default: ""
     - name: pdf-theme
       description: >-
         The name or file path of the Asciidoctor PDF theme to load.
@@ -56,7 +63,8 @@ spec:
         render-template \
           --template='$(params.template)' \
           --output-dir=$(params.output-dir) \
-          --data-source='$(params.data-sources)'
+          --data-source='$(params.data-sources)' \
+          --set='$(params.set)'
 
         asciidoctor_pdf_flags='--failure-level ERROR'
         if [ "$(params.pdf-theme)" != "" ]; then

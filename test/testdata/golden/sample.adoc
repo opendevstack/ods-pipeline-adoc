@@ -25,3 +25,7 @@ Sprig template functions can be used:
 And custom helper functions can be used:
 bar: b
 foo: a
+
+
+It is also possible to use values set from the CLI:
+valbar and valbaz

@@ -1,6 +1,6 @@
 The purpose of this task is to render a asciidoc template located in the repository into a PDF. In addition to just transforming the asciidoc file to PDF, the task is also able to render information gathered from YAML/JSON files (such as ODS Pipeline artifacts) into the asciidoc file before transforming it to PDF.
 
-The task expects a glob pattern pointing to one or more Go template files (given by parameter `template`). It renders each found Go template with data gathered from files matching the `data-sources` parameter, which defaults to `.ods/\*;.ods/repos/*/.ods/\*;.ods/artifacts/*/\*.json;.ods/artifacts/*/*.yaml`. The asciidoc template can then access data parsed from these files. For example, if file `.ods/artifacts/org.foo/some.json` contains:
+The task expects a glob pattern pointing to one or more Go template files (given by parameter `template`). It renders each found Go template with data gathered from files matching the `data-sources` parameter, which defaults to `.ods/\*,.ods/repos/*/.ods/\*,.ods/artifacts/*/\*.json,.ods/artifacts/*/*.yaml`. The asciidoc template can then access data parsed from these files. For example, if file `.ods/artifacts/org.foo/some.json` contains:
 
 ```
 {"a":"b"}

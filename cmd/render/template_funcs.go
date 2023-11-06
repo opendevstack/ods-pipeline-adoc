@@ -52,7 +52,7 @@ func toSentence(items []string) string {
 
 // keys returns a slice of all keys in map m.
 func keys(m map[string]any) (keys []string) {
-	for k, _ := range m {
+	for k := range m {
 		keys = append(keys, k)
 	}
 	return

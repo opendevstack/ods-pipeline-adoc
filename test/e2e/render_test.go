@@ -17,6 +17,7 @@ func TestRenderAdocTask(t *testing.T) {
 		ttr.UsingTask("ods-pipeline-adoc-render"),
 		ttr.WithStringParams(map[string]string{
 			"template":                   "templates/*.adoc.tmpl",
+			"set":                        "greeting=Hello,who=World",
 			"output-dir":                 "rendered",
 			"retain-rendered-adoc-files": "true",
 		}),

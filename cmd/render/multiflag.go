@@ -12,6 +12,6 @@ func (i *multiFlag) String() string {
 }
 
 func (i *multiFlag) Set(value string) error {
-	*i = append(*i, strings.Split(value, ";")...)
+	*i = append(*i, strings.Split(value, ",")...)
 	return nil
 }

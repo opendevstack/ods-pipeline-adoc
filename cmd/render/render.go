@@ -14,7 +14,7 @@ import (
 
 var nonAlphanumericRegex = regexp.MustCompile(`[^a-zA-Z0-9]+`)
 
-func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) error {
+func render(baseDir, templateGlob, outputDir string, dataSourceGlobs, setFlags []string) error {
 	if !strings.HasSuffix(baseDir, "/") {
 		baseDir = baseDir + "/"
 	}
@@ -29,6 +29,14 @@ func render(baseDir, templateGlob, outputDir string, dataSourceGlobs []string) e
 	data, err := extractDataFromSources(baseDir, dataSourceGlobs)
 	if err != nil {
 		return err
+	}
+	// Add key=value paris specified via --set.
+	for _, v := range setFlags {
+		key, value, found := strings.Cut(v, "=")
+		if !found {
+			return fmt.Errorf("%q is not a valid --set flag, must be of form key=value", v)
+		}
+		data[key] = value
 	}
 
 	matches, err := filepath.Glob(filepath.Join(baseDir, templateGlob))
