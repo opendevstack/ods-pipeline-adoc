@@ -8,7 +8,7 @@ spec:
   description: |
     Render Asciidoctor templates to PDF.
 
-    See https://github.com/opendevstack/ods-pipeline-adoc/blob/vlatest/docs/tasks/render.adoc
+    See https://github.com/opendevstack/ods-pipeline-adoc/blob/v0.1.0/docs/tasks/render.adoc
   params:
     - name: working-dir
       description: |
@@ -52,7 +52,7 @@ spec:
   steps:
     - name: render
       # Image is built from build/images/Dockerfile.adoc-toolset.
-      image: 'ghcr.io/opendevstack/ods-pipeline-adoc/adoc-toolset:latest'
+      image: 'ghcr.io/opendevstack/ods-pipeline-adoc/adoc-toolset:0.1.0'
       env:
         - name: DEBUG
           valueFrom:
