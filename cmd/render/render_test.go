@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/opendevstack/ods-pipeline-adoc/internal/testhelper"
 )
 
@@ -99,5 +100,27 @@ func TestRenderFailsOnMissingKeys(t *testing.T) {
 		t.Error("Fixture template error.adoc.tmpl includes non-existent reference")
 	} else if !strings.Contains(err.Error(), ".ods.artifacts.org_opendevstack_pipeline_go_foo.result.foo") {
 		t.Errorf("Error must list valid references, got:\n%s", err)
+	}
+}
+
+func TestWalkMap(t *testing.T) {
+	got := []string{}
+	data := map[string]any{
+		"foo": "bar",
+		"baz": map[string]any{
+			"one": 1,
+			"two": map[string]any{
+				"x": "y",
+			},
+		},
+	}
+	walkMap(data, &got, []string{}, assembleRef)
+	want := []string{
+		".foo",
+		".baz.one",
+		".baz.two.x",
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("walkMap() mismatch (-want +got):\n%s", diff)
 	}
 }

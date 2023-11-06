@@ -148,6 +148,9 @@ func collectDataFromMatchingFiles(baseDir, glob string, data map[string]interfac
 type visitFunc func(path []string, key any, value any) string
 
 func assembleRef(path []string, key, value any) string {
+	if len(path) == 0 {
+		return fmt.Sprintf(".%s", key)
+	}
 	return fmt.Sprintf(".%s.%s", strings.Join(path, "."), key)
 }
 
