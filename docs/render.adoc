@@ -2,7 +2,7 @@
 
 = ods-pipeline-adoc-render
 
-The purpose of this task is to render a asciidoc template located in the repository into a PDF. In addition to just transforming the asciidoc file to PDF, the task is also able to render information gathered from YAML/JSON files (such as ODS Pipeline artifacts) into the asciidoc file before transforming it to PDF.
+The purpose of this task is to render a asciidoc template located in the repository into a PDF. In addition to just transforming the asciidoc file to PDF, the task is also able to render information gathered from YAML/JSON/XML files (such as ODS Pipeline artifacts) into the asciidoc file before transforming it to PDF.
 
 The task expects a glob pattern pointing to one or more Go template files (given by parameter `template`). It renders each found Go template with data gathered from files matching the `data-sources` parameter, which defaults to `.ods/\*,.ods/repos/*/.ods/\*,.ods/artifacts/*/\*.json,.ods/artifacts/*/*.yaml`. The asciidoc template can then access data parsed from these files. For example, if file `.ods/artifacts/org.foo/some.json` contains:
 
@@ -12,7 +12,7 @@ The task expects a glob pattern pointing to one or more Go template files (given
 
 The asciidoc template can access the value of the field `a` by referencing `{{.ods.artifacts.org_foo.some.a}}`. Note that any non-alphanumeric character in the file path is replaced with an underscore, and leading or trailing underscores are trimmed.
 
-Note that only JSON and YAML formats are recognized as such. If a matching file does not end in either `.json` or `.y(a)ml`, its entire content is made available under the key `value`. For example, the glob pattern `*.log` might match the file `pipeline-run.log`, which would expose the content of the file as `pipeline_run.value` to the template.
+Note that only YAML, JSON, and XML formats are recognized as such. If a matching file does not end in `.y(a)ml`, `.json` or `.xml`, its entire content is made available under the key `value`. For example, the glob pattern `*.log` might match the file `pipeline-run.log`, which would expose the content of the file as `pipeline_run.value` to the template.
 
 The Go template can make use of template functions provided by link:http://masterminds.github.io/sprig/[sprig], as well as the following helper functions:
 
