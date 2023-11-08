@@ -2,4 +2,5 @@
 
 This is a second adoc file.
 
-{{.ods.artifacts.bar.result.other.value}}
+{{$result := data ".ods/artifacts/bar/result.yaml" -}}
+{{$result.other.value}}

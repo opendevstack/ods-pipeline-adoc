@@ -4,26 +4,34 @@ This is a sample adoc file.
 
 Actually, it is a Go template, with some placeholders like:
 
-* {{.ods.artifacts.org_opendevstack_pipeline_go_foo.result.foo}}
-* {{.ods.artifacts.org_opendevstack_pipeline_go_foo.result.bar}}
-* {{.ods.artifacts.org_opendevstack_pipeline_go_bar.result.foo}}
+{{$foo_result := data ".ods/artifacts/org.opendevstack.pipeline-go.foo/result.json" -}}
+{{$bar_result := data ".ods/artifacts/org.opendevstack.pipeline-go.bar/result.json" -}}
+* {{index $foo_result "foo"}}
+* {{index $foo_result "bar"}}
+* {{index $bar_result "foo"}}
 
 Also with longer text:
-{{.ods.artifacts.org_opendevstack_pipeline_go_bar.info.value}}
+{{content ".ods/artifacts/org.opendevstack.pipeline-go.bar/info.txt"}}
 
 Even nested things work:
 
-Hello {{.ods.artifacts.org_opendevstack_pipeline_go_foo.other.hello.msg}}!
+{{$other := data ".ods/artifacts/org.opendevstack.pipeline-go.foo/other.yaml" -}}
+Hello {{$other.hello.msg}}!
 
 And other keys can be passed as well:
 
-{{.metadata.foo}}
+{{$metadata := data "metadata.yaml" -}}
+{{$metadata.foo}}
 
 Sprig template functions can be used:
 {{toDate "2006-01-02" "2017-12-31" | date "02/01/2006"}}
 
 And custom helper functions can be used:
-{{toYAML .ods.artifacts.org_opendevstack_pipeline_go_foo.result}}
+{{toYAML $foo_result}}
+Here's another one:
+{{$ods := contents ".ods/*"}}
+{{$ods.project}}
+{{$ods.component}}
 
 It is also possible to use values set from the CLI:
 {{.keyfoo}} and {{.keybar}}
