@@ -10,6 +10,10 @@ listed in the changelog.
 
 ## [Unreleased]
 
+### Added
+
+- Support for XML files ([#3](https://github.com/opendevstack/ods-pipeline-adoc/issues/3))
+
 ## [0.1.0] - 2023-11-06
 
 Initial version.

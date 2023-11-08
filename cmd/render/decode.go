@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"io"
 	"strings"
@@ -58,6 +59,8 @@ func selectNewDecoderFunc(ext string) newDecoderFunc {
 		return func(r io.Reader) decoder { return json.NewDecoder(r) }
 	case ".yaml", ".yml":
 		return func(r io.Reader) decoder { return &yamlDecoder{r} }
+	case ".xml":
+		return func(r io.Reader) decoder { return xml.NewDecoder(r) }
 	}
 	return func(r io.Reader) decoder { return &plainDecoder{r} }
 }
