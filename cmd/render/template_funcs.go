@@ -14,6 +14,7 @@ func templateFuncs(baseDir string) template.FuncMap {
 		"data":          makeDataFunc(baseDir),
 		"content":       makeContentFunc(baseDir),
 		"contents":      makeContentsFunc(baseDir),
+		"files":         makeFilesFunc(baseDir),
 		"directories":   makeDirectoriesFunc(baseDir),
 		"exists":        makeExistsFunc(baseDir),
 		"fromMultiYAML": fromMultiYAML,
@@ -116,6 +117,23 @@ func makeContentsFunc(baseDir string) func(glob string) (map[string]any, error) 
 			data[filepath.Base(m)] = strings.TrimSpace(string(b))
 		}
 		return data, nil
+	}
+}
+
+// makeFilesFunc returns a function that returns the files found at given path.
+func makeFilesFunc(baseDir string) func(filename string) ([]string, error) {
+	return func(path string) ([]string, error) {
+		entries, err := os.ReadDir(filepath.Join(baseDir, path))
+		if err != nil {
+			return nil, err
+		}
+		var dirs []string
+		for _, e := range entries {
+			if !e.IsDir() {
+				dirs = append(dirs, e.Name())
+			}
+		}
+		return dirs, nil
 	}
 }
 

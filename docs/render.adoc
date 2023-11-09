@@ -9,6 +9,7 @@ The task expects a glob pattern pointing to one or more Go template files (given
 * `data`. Parses a `.y(a)ml`, `.json` or `.xml` file into a map. Example: `{{$metadata := data "metadata.yaml"}}`
 * `content`. Reads the content of the given file. Example: `{{content ".ods/project"}}`
 * `contents`. Reads the content of all files matching the given glob pattern. Example: `{{$ods := contents ".ods/*"}}`
+* `files`. Returns a slice of files at given path. Example: `{{$images := data ".ods/artifacts/image-digests/*"}}`
 * `directories`. Returns a slice of directories at given path. Example: `{{$repos := data ".ods/repos"}}`
 * `exists`. Checks whether given path exists. Example: `{{if exists ".ods/artifacts/foo/bar.json"}}artifact exists{{end}}`
 * `fromMultiYAML`. Turns a string of multiple YAML documents (separated with `---`) into a slice of maps. Example: `{{$manifest := fromMultiYAML $helm_status.manifest}}`
