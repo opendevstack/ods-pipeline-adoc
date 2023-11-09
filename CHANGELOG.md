@@ -10,6 +10,10 @@ listed in the changelog.
 
 ## [Unreleased]
 
+### Changed
+
+- Remove `data-source` parameter and introduce template helpers instead ([#7](https://github.com/opendevstack/ods-pipeline-adoc/pull/7))
+
 ### Added
 
 - Support for XML files ([#3](https://github.com/opendevstack/ods-pipeline-adoc/issues/3))
