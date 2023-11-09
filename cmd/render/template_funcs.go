@@ -1,17 +1,25 @@
 package main
 
 import (
-	"html/template"
+	"os"
+	"path/filepath"
 	"strings"
+	"text/template"
 
 	"sigs.k8s.io/yaml"
 )
 
-var templateFuncs = template.FuncMap{
-	"fromMultiYAML": fromMultiYAML,
-	"toYAML":        toYAML,
-	"toSentence":    toSentence,
-	"keys":          keys,
+func templateFuncs(baseDir string) template.FuncMap {
+	return template.FuncMap{
+		"data":          makeDataFunc(baseDir),
+		"content":       makeContentFunc(baseDir),
+		"contents":      makeContentsFunc(baseDir),
+		"directories":   makeDirectoriesFunc(baseDir),
+		"exists":        makeExistsFunc(baseDir),
+		"fromMultiYAML": fromMultiYAML,
+		"toYAML":        toYAML,
+		"toSentence":    toSentence,
+	}
 }
 
 // fromMultiYAML turns a string of multiple YAML documents
@@ -50,10 +58,88 @@ func toSentence(items []string) string {
 	}
 }
 
-// keys returns a slice of all keys in map m.
-func keys(m map[string]any) (keys []string) {
-	for k := range m {
-		keys = append(keys, k)
+// makeDataFunc returns a function that parses the contents of the given filename
+// into a map. JSON, YAML and XML are supported.
+func makeDataFunc(baseDir string) func(filename string) (map[string]any, error) {
+	return func(filename string) (map[string]any, error) {
+		decoderFunc := selectNewDecoderFunc(filepath.Ext(filename))
+
+		f, err := os.Open(filepath.Join(baseDir, filename))
+		if err != nil {
+			return nil, err
+		}
+		defer f.Close()
+
+		data := map[string]any{}
+		dec := decoderFunc(f)
+		err = dec.Decode(&data)
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
 	}
-	return
+}
+
+// makeContentFunc returns a function that returns the contents of the given filename.
+func makeContentFunc(baseDir string) func(filename string) (string, error) {
+	return func(filename string) (string, error) {
+		b, err := os.ReadFile(filepath.Join(baseDir, filename))
+		return strings.TrimSpace(string(b)), err
+	}
+}
+
+// makeContentsFunc returns a function that returns a map with the contents of the given file glob.
+func makeContentsFunc(baseDir string) func(glob string) (map[string]any, error) {
+	return func(glob string) (map[string]any, error) {
+		matches, err := filepath.Glob(filepath.Join(baseDir, glob))
+		if err != nil {
+			return nil, err
+		}
+		data := make(map[string]any)
+		for _, m := range matches {
+			f, err := os.Open(m)
+			if err != nil {
+				return nil, err
+			}
+			defer f.Close()
+			fInfo, err := f.Stat()
+			if err != nil {
+				return nil, err
+			}
+			if fInfo.IsDir() {
+				continue
+			}
+			b, err := os.ReadFile(m)
+			if err != nil {
+				return nil, err
+			}
+			data[filepath.Base(m)] = strings.TrimSpace(string(b))
+		}
+		return data, nil
+	}
+}
+
+// makeDirectoriesFunc returns a function that returns the directories found at given path.
+func makeDirectoriesFunc(baseDir string) func(filename string) ([]string, error) {
+	return func(path string) ([]string, error) {
+		entries, err := os.ReadDir(filepath.Join(baseDir, path))
+		if err != nil {
+			return nil, err
+		}
+		var dirs []string
+		for _, e := range entries {
+			if e.IsDir() {
+				dirs = append(dirs, e.Name())
+			}
+		}
+		return dirs, nil
+	}
+}
+
+// makeExistsFunc returns a function that checks whether the given path exists.
+func makeExistsFunc(baseDir string) func(filename string) bool {
+	return func(path string) bool {
+		_, err := os.Open(filepath.Join(baseDir, path))
+		return err == nil
+	}
 }

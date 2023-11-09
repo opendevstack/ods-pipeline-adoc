@@ -8,10 +8,9 @@ spec:
 
     See https://github.com/opendevstack/ods-pipeline-adoc/blob/v{{.Version}}/docs/tasks/render.adoc
   params:
-    - name: working-dir
+    - name: base-dir
       description: |
-        Working directory. The path must be relative to the root of the repository,
-        without leading `./` and trailing `/`.
+        Base directory. Paths given to template helpers are interprested relative to this directory.
       type: string
       default: "."
     - name: template
@@ -23,17 +22,10 @@ spec:
         Output directory where to place the rendered PDF files.
       type: string
       default: ".ods/artifacts/org.opendevstack.pipeline.adoc.pdf"
-    - name: data-sources
-      description: >-
-        Glob patterns from where to source data.
-        Multiple glob patterns are separated by commas.
-      type: string
-      default: ".ods/*,.ods/repos/*/.ods/*,.ods/artifacts/*/*.json,.ods/artifacts/*/*.yaml"
     - name: set
       description: >-
         Set template data values directly.
-        Multiple key=value pairs are separated by commas. Keys specified have
-        precedence over those discovered through `data-sources`.
+        Multiple key=value pairs are separated by commas.
       type: string
       default: ""
     - name: pdf-theme
@@ -62,8 +54,8 @@ spec:
       script: |
         render-template \
           --template='$(params.template)' \
+          --base-dir='$(params.base-dir)' \
           --output-dir=$(params.output-dir) \
-          --data-source='$(params.data-sources)' \
           --set='$(params.set)'
 
         asciidoctor_pdf_flags='--failure-level ERROR'

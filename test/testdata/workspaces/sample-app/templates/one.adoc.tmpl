@@ -2,6 +2,7 @@
 
 This is a sample adoc file.
 
-Output: {{.ods.artifacts.foo.out.result}}
+Output: {{index (data ".ods/artifacts/foo/out.json") "result"}}
 
-Result: {{.ods.artifacts.bar.result.some.sample.value}}
+{{$result := data ".ods/artifacts/bar/result.yaml" -}}
+Result: {{$result.some.sample.value}}

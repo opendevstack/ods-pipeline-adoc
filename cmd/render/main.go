@@ -2,11 +2,7 @@
 //
 //		go run github.com/opendevstack/ods-pipeline-adoc/cmd/render \
 //			-template=sample.adoc.tmpl \
-//	        -output-dir=rendered \
-//			-data-source=records:sample-artifacts/*/*.json \
-//			-data-source=records:sample-artifacts/*/*.yaml
-//
-// Parsing of data is only supported for .json and .y(a)ml files.
+//	        -output-dir=rendered
 package main
 
 import (
@@ -17,9 +13,8 @@ import (
 
 func main() {
 	templateGlob := flag.String("template", "", "Glob pattern from where to source templates")
+	baseDir := flag.String("base-dir", ".", "Base directory from which to interpret filepaths passed to helper functions")
 	outputDir := flag.String("output-dir", "", "Output directory where to place the rendered files")
-	var dataSourceFlags multiFlag
-	flag.Var(&dataSourceFlags, "data-source", "Glob pattern from where to source data (may be specified multiple times)")
 	var setFlags multiFlag
 	flag.Var(&setFlags, "set", "Set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	flag.Parse()
@@ -27,7 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := render(wd, *templateGlob, *outputDir, dataSourceFlags, setFlags); err != nil {
+	if err := render(wd, *baseDir, *templateGlob, *outputDir, setFlags); err != nil {
 		log.Fatal(err)
 	}
 }
