@@ -4,7 +4,7 @@
 
 The purpose of this task is to render a asciidoc template located in the repository into a PDF. In addition to just transforming the asciidoc file to PDF, the task is also able to render information, for example gathered from YAML/JSON/XML files such as ODS Pipeline artifacts, into the asciidoc file before transforming it to PDF.
 
-The task expects a glob pattern pointing to one or more Go template files (given by parameter `template`). The templates can make use of template functions provided by link:http://masterminds.github.io/sprig/[sprig], as well as the following helper functions:
+The task expects a glob pattern pointing to one or more link:https://pkg.go.dev/text/template[Go template] files (given by parameter `template`). The templates can make use of template functions provided by link:http://masterminds.github.io/sprig/[sprig], as well as the following helper functions:
 
 * `data`. Parses a `.y(a)ml`, `.json` or `.xml` file into a map. Example: `{{$metadata := data "metadata.yaml"}}`
 * `content`. Reads the content of the given file. Example: `{{content ".ods/project"}}`
